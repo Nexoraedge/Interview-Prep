@@ -84,9 +84,9 @@ export async function setSessionCookie(idToken: string) {
 export async function getCurrentUser(): Promise<User | null> {
     try {
         const cookieStore = await cookies(); // Synchronous
-        const sessionCookie =cookieStore.get('session')?.value;
+        const sessionCookie = cookieStore.get('session')?.value;
         //console.log("sessionCookie: ", sessionCookie);
-        
+
 
         if (!sessionCookie) {
             console.warn("No session cookie found");
@@ -95,15 +95,15 @@ export async function getCurrentUser(): Promise<User | null> {
 
         const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
         //console.log("Decoded claims:", decodedClaims);
-        
+
         if (!decodedClaims?.uid) {
             console.error("Decoded claims missing uid", decodedClaims);
             return null;
-        } 
+        }
         if (decodedClaims?.uid) {
             //console.log("Decoded claims uid:", decodedClaims.uid);
         }
-        
+
         const userRecord = await db.collection('users').doc(decodedClaims.uid).get();
         if (!userRecord.exists) {
             console.warn("User document not found for uid:", decodedClaims.uid);
@@ -129,4 +129,32 @@ export async function getCurrentUser(): Promise<User | null> {
 export async function isAuthenticated() {
     const user = await getCurrentUser();
     return !!user;
+}
+
+export async function getInterviewByUserId(userId: string): Promise<Interview[] | null> {
+    const interviews = await db
+        .collection('interviews').where('userId', '==', userId)
+        .orderBy('createdAt', 'desc')
+        .get();
+
+    return interviews.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+    })) as Interview[];
+}
+export async function getLatestInterviews(params: GetLatestInterviewsParams): Promise<Interview[] | null> {
+   
+    const {userId  , limit = 20} = params
+   
+    const interviews = await db
+        .collection('interviews')
+        .orderBy('createdAt', 'desc')
+        .where('finalized','==',true).where('userId', '!=' , userId)
+        .limit(limit)
+        .get();
+
+    return interviews.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+    })) as Interview[];
 }

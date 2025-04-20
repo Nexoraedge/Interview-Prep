@@ -3,14 +3,12 @@ import { google } from "@ai-sdk/google"
 import { getRandomInterviewCover } from "@/lib/utils";
 import { db } from "@/firebase/admin";
 
-export async function GET() {
-    return Response.json({ success: true, data: "Thank You!!" }, { status: 200 })
-}
+
 
 export async function POST(request: Request) {
     const { type, role, level, techstack, amount, userId } = await request.json();
     try {
-         
+
         const { text: questions } = await generateText({
             model: google('gemini-2.0-flash-thinking-exp-01-21'),
             prompt: `Prepare questions for a job interview.
@@ -20,6 +18,7 @@ export async function POST(request: Request) {
         The focus between behavioural and technical questions should lean towards: ${type}.
         The amount of questions required is: ${amount}.
         Please return only the questions, without any additional text.
+        You are a backend service. Only respond with a pure JSON array of interview questions. No explanation, no formatting.
         The questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice assistant.
         Return the questions formatted like this:
         ["Question 1", "Question 2", "Question 3"]
@@ -27,22 +26,24 @@ export async function POST(request: Request) {
         Thank you! <3
     `});
 
-        
         const interview = {
             type, role, level,
             techstack: techstack.split(','),
             questions: JSON.parse(questions),
-            userId : userId,
+            userId: userId,
             finalized: true,
             coverImage: getRandomInterviewCover(),
             createdAt: new Date().toISOString(),
         }
         await db.collection("interviews").add(interview);
-        return Response.json({success:true}, {status:200})
+        return Response.json({ success: true }, { status: 200 })
     } catch (e) {
         console.error(e);
-        return Response.json({ success: false, message: "Failed to generate interview : " , error:"error aa gya - "+e }, { status: 500 })
+        return Response.json({ success: false, message: "Failed to generate interview : ", error: "error aa gya - " + e }, { status: 500 })
 
     }
 }
 
+export async function GET() {
+    return Response.json({ success: true, data: "Thank You!!" }, { status: 200 })
+}
