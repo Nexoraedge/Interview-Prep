@@ -5,7 +5,7 @@ const Interview = () => {
   return (
     <>
       <h3>Interview Genration</h3>
-      <Agent  userName ="You" userId="user1" export type  = "generation" />
+      <Agent  userName ="You" userId="user1" export type="generation" />
     </>
   )
 }
