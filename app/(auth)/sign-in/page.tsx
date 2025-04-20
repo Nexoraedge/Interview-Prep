@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Authforms from '@/components/Authforms'
 import React from 'react'
 
