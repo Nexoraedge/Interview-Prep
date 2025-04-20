@@ -6,7 +6,7 @@ import { db } from "@/firebase/admin";
 
 
 export async function POST(request: Request) {
-    const { type, role, level, techstack, amount, userId } = await request.json();
+    const { type, role, level, techstack, amount, userid } = await request.json();
     try {
 
         const { text: questions } = await generateText({
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
             type, role, level,
             techstack: techstack.split(','),
             questions: JSON.parse(questions),
-            userId: userId,
+            userid: userid || "anonymous",
             finalized: true,
             coverImage: getRandomInterviewCover(),
             createdAt: new Date().toISOString(),
