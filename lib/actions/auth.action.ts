@@ -85,7 +85,7 @@ export async function getCurrentUser(): Promise<User | null> {
     try {
         const cookieStore = await cookies(); // Synchronous
         const sessionCookie =cookieStore.get('session')?.value;
-        console.log("sessionCookie: ", sessionCookie);
+        //console.log("sessionCookie: ", sessionCookie);
         
 
         if (!sessionCookie) {
@@ -94,14 +94,14 @@ export async function getCurrentUser(): Promise<User | null> {
         }
 
         const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
-        console.log("Decoded claims:", decodedClaims);
+        //console.log("Decoded claims:", decodedClaims);
         
         if (!decodedClaims?.uid) {
             console.error("Decoded claims missing uid", decodedClaims);
             return null;
         } 
         if (decodedClaims?.uid) {
-            console.log("Decoded claims uid:", decodedClaims.uid);
+            //console.log("Decoded claims uid:", decodedClaims.uid);
         }
         
         const userRecord = await db.collection('users').doc(decodedClaims.uid).get();
