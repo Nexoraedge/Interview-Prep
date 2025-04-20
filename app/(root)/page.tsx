@@ -15,9 +15,15 @@ import {
 const page = async () => {
   const user = await getCurrentUser();
 
+  if (!user?.id) {
+    return (
+      <p className="text-center mt-10 text-xl">Please log in to view your interviews.</p>
+    );
+  }
+
  const [userInterviews , latestInterviews] = await Promise.all([
-   await getInterviewByUserId(user?.id!),
-  await getLatestInterviews({userId : user?.id!}),
+   await getInterviewByUserId(user.id),
+  await getLatestInterviews({userId : user.id}),
  ])
 
 
@@ -64,7 +70,7 @@ const page = async () => {
               <InterviewCard key={interview.id} {...interview} />
             ))
           ) : (
-            <p>You haven&apos;t taken any interviews yet</p>
+            <p>No available interviews. Start one now!</p>
           )}
         </div>
       </section>

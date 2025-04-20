@@ -33,7 +33,7 @@ export async function POST(request: Request) {
             userid: userid || "anonymous",
             finalized: true,
             coverImage: getRandomInterviewCover(),
-            createdAt: new Date().toISOString(),
+            createdAt: new Date(),
         }
         await db.collection("interviews").add(interview);
         return Response.json({ success: true }, { status: 200 })
