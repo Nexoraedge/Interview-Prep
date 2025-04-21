@@ -132,8 +132,9 @@ export async function isAuthenticated() {
 }
 
 export async function getInterviewByUserId(userId: string): Promise<Interview[] | null> {
+    console.log("userId: ",userId)
     const interviews = await db
-        .collection('interviews').where('userId', '==', userId)
+        .collection('interviews').where('userid', '==', userId)
         .orderBy('createdAt', 'desc')
         .get();
 
@@ -149,7 +150,7 @@ export async function getLatestInterviews(params: GetLatestInterviewsParams): Pr
     const interviews = await db
         .collection('interviews')
         .orderBy('createdAt', 'desc')
-        .where('finalized', '==', true).where('userId', '!=', userId).orderBy('userId')
+        .where('finalized', '==', true).where('userid', '!=', userId).orderBy('userid')
         .limit(limit)
         .get();
 
