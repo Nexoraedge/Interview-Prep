@@ -45,7 +45,7 @@ const Authforms = ({ type }: { type: FormType }) => {
           email,
           password
         );
-         //console.log(userCredentials);
+         ////console.log(userCredentials);
 
         const result = await signUp({
           uid : userCredentials.user.uid,
@@ -53,14 +53,14 @@ const Authforms = ({ type }: { type: FormType }) => {
           password:password,
           name:name!
         });
-        //console.log(result);
+        ////console.log(result);
         if (!result?.success){
           toast.error(result?.message)
           return;
         }
 
         toast.success("Sign up successfull");
-        //console.log("sing-up", values);
+        ////console.log("sing-up", values);
         router.push("/sign-in");
       } else {
         const {email , password}= values;
@@ -82,14 +82,14 @@ const Authforms = ({ type }: { type: FormType }) => {
             idToken
           })
           toast.success("Sign in ");
-          //console.log("sing-in", values);
+          ////console.log("sing-in", values);
           router.push("/");
          }
 
 
       }
     } catch (error) {
-      //console.log(error);
+      ////console.log(error);
       toast.error(`Something went wrong : ${error}`);
     }
   }

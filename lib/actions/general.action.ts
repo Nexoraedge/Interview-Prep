@@ -6,7 +6,7 @@ import { generateObject } from "ai";
 
 
 export async function getInterviewByUserId(userId: string): Promise<Interview[] | null> {
-    console.log("userId: ", userId)
+    //console.log("userId: ", userId)
     const interviews = await db
         .collection('interviews').where('userid', '==', userId)
         .orderBy('createdAt', 'desc')
@@ -35,7 +35,7 @@ export async function getLatestInterviews(params: GetLatestInterviewsParams): Pr
 }
 
 export async function getInterviewById(id: string): Promise<Interview | null> {
-    console.log("userId: ", id)
+    //console.log("userId: ", id)
     const interview = await db
         .collection('interviews')
         .doc(id)
@@ -46,6 +46,9 @@ export async function getInterviewById(id: string): Promise<Interview | null> {
 
 export async function createFeedback(params: CreateFeedbackParams) {
     const { interviewId, userId, transcript } = params;
+    //console.log("interviewId: ", interviewId);
+    //console.log("userId: ", userId);
+    //console.log("transcript: ", transcript);
     try {
         const formattedTranscript = transcript.map((sentence: { role: string; content: string }) => (
             `- ${sentence.role}:${sentence.content} \n`
@@ -83,13 +86,15 @@ export async function createFeedback(params: CreateFeedbackParams) {
         createdAt: new Date()
        })
 
+       //console.log("Feedback created:", feedback.id);
+
        return{
         success:true,
         feedbackId:feedback.id,
        }
 
     } catch (e) {
-        console.log("Error hai createfeedback mien :" + e);
+        //console.log("Error hai createfeedback mien :" + e);
         return{
             success:false,
             feedbackId:null
@@ -100,18 +105,22 @@ export async function createFeedback(params: CreateFeedbackParams) {
 export async function getFeedbackByInterviewId(params: GetFeedbackByInterviewIdParams): Promise<Feedback| null> {
 
     const { interviewId, userId } = params
+    //console.log("interviewId:"+interviewId+"\t, UserId:"+userId);
+    
 
     const feedback = await db
         .collection('feedback')
-        .where('interviewId', '==', interviewId).where('userid', '==', userId).orderBy('userid')
+        .where('interviewId', '==', interviewId).where('userId', '==', userId).orderBy('userId')
         .limit(1)
         .get();
 
+        //console.log("Feedback fetched:"+ feedback+"geedback id",interviewId);
+;
         if (feedback.empty) {
             return null;
         }
-
         const feedbackdoc = feedback.docs[0];
+        //console.log("feedback doc : ", feedbackdoc);
         return {
             id:feedbackdoc.id , ...feedbackdoc.data()
         }as Feedback;

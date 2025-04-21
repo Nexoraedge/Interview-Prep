@@ -6,9 +6,9 @@ import React, { ReactNode } from 'react'
 const AuthLayout =async ({children}:{children:ReactNode}) => {
   const isUserAuthenticated= await isAuthenticated();
    
-   //console.log("isUserAuthenticated : ", isUserAuthenticated);
+   ////console.log("isUserAuthenticated : ", isUserAuthenticated);
       if (isUserAuthenticated) {
-        //console.log("true toh hai ");
+        ////console.log("true toh hai ");
         
           redirect('/'); 
       }
