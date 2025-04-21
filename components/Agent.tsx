@@ -1,4 +1,5 @@
 "use client";
+import { interviewer } from "@/constants";
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
@@ -16,7 +17,7 @@ interface SavedMessage {
   content: string;
 }
 
-const Agent = ({ userName, userId, type }: AgentProps) => {
+const Agent = ({ userName, userId, type , interviewId , questions }: AgentProps) => {
   const router = useRouter();
   const [isSpeaking, setisSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -56,21 +57,55 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
     };
   }, []);
 
+  const handleFeedback= async (messages:SavedMessage[]) => {
+    console.log("messages- genrate feed back here", messages);
+
+    const {success , id} = {
+      success:true,
+      id:'feedbak id'+interviewId,
+    }
+    if(success && id){
+      router.push(`/interview/${interviewId}/feedback`)
+    }else{
+      console.log("error in feedback");
+      router.push('/')
+    }
+  }
+
   useEffect(() => {
-    if (callStatus === CallStatus.FINISHED) router.push("/");
+    if(callStatus === CallStatus.FINISHED){
+      if(type === 'generate'){
+        router.push("/");
+      }else{
+        handleFeedback(messages);
+      }
+    }
   }, [callStatus, messages, type, userId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
-
-    await vapi.start("d7288fc8-ce1c-45b9-9ea6-f73ba2079728", {
+  if(type === 'generate'){
+    await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID, {
       variableValues: {
         username: userName,
         userid: userId,
       },
     });
-    console.log("Starting call with ID:", process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID);
+    // console.log("Starting call with ID:", process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID);
+  } else{
+    let formattedQuestions = '';
 
+    if(questions){
+      formattedQuestions=questions
+      .map((question)=>`- ${question}`)
+      .join('\n');
+    }
+    await vapi.start(interviewer,{
+      variableValues:{
+        questions:formattedQuestions,
+      }
+    })
+  }
   };
 
   const handleDisconnect = async () => {

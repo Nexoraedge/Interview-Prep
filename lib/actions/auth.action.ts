@@ -85,7 +85,7 @@ export async function getCurrentUser(): Promise<User | null> {
     try {
         const cookieStore = await cookies(); // Synchronous
         const sessionCookie = cookieStore.get('session')?.value;
-        //console.log("sessionCookie: ", sessionCookie);
+        // console.log("sessionCookie: ", sessionCookie);
 
 
         if (!sessionCookie) {
@@ -131,31 +131,3 @@ export async function isAuthenticated() {
     return !!user;
 }
 
-export async function getInterviewByUserId(userId: string): Promise<Interview[] | null> {
-    console.log("userId: ",userId)
-    const interviews = await db
-        .collection('interviews').where('userid', '==', userId)
-        .orderBy('createdAt', 'desc')
-        .get();
-
-    return interviews.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-    })) as Interview[];
-}
-export async function getLatestInterviews(params: GetLatestInterviewsParams): Promise<Interview[] | null> {
-
-    const { userId, limit = 20 } = params
-
-    const interviews = await db
-        .collection('interviews')
-        .orderBy('createdAt', 'desc')
-        .where('finalized', '==', true).where('userid', '!=', userId).orderBy('userid')
-        .limit(limit)
-        .get();
-
-    return interviews.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-    })) as Interview[];
-}
