@@ -8,7 +8,7 @@ import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
 const InterviewCard = async({
   id,
-  userId,
+  userid,
   role,
   type,
   techstack,
@@ -17,12 +17,13 @@ const InterviewCard = async({
   finalized,
   createdAt,
 }: Interview) => {
-  const feedback = userId && id ? await getFeedbackByInterviewId({interviewId:id , userId:userId }):null;
+
+  const feedback = userid && id ? await getFeedbackByInterviewId({interviewId:id , userId:userid }):null;
   console.log(feedback)
   const normalizedtype = /mix/gi.test(type) ? "Mixed" : type;
-  const formattedDate = dayjs(
-    feedback?.createdAt || createdAt || Date.now()
-  ).format("MMMM D, YYYY");
+  const timestamp = feedback?.createdAt || createdAt;
+  const dateValue = timestamp?._seconds ? new Date(timestamp._seconds * 1000) : timestamp || Date.now();
+  const formattedDate = dayjs(dateValue).format("MMMM D, YYYY");
   return (
     <div className="card-border w-[360px] max-sm:w-full min-h-96">
       <div className="card-interview">
