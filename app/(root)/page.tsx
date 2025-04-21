@@ -14,20 +14,17 @@ import { getInterviewByUserId, getLatestInterviews } from "@/lib/actions/general
 const page = async () => {
   const user = await getCurrentUser();
 
-  if (!user?.id) {
-    return (
-      <p className="text-center mt-10 text-xl">Please log in to view your interviews.</p>
-    );
-  }
 
- const [userInterviews , latestInterviews] = await Promise.all([
-   await getInterviewByUserId(user.id),
-  await getLatestInterviews({userId : user.id}),
+ const [userInterviews , AllInterviews] = await Promise.all([
+   await getInterviewByUserId(user?.id!),
+  await getLatestInterviews({userId : user?.id!}),
  ])
 
 
   const hasPastInterviews = userInterviews?.length > 0;
-  const hasUpcomingInterviews = latestInterviews?.length > 0;
+  const hasUpcomingInterviews = AllInterviews?.length > 0;
+  
+
 
   return (
     <>
@@ -54,7 +51,13 @@ const page = async () => {
         <div className="interviews-section">
         {hasPastInterviews ? (
             userInterviews?.map((interview) => (
-              <InterviewCard key={interview.id} {...interview} />
+              <InterviewCard key={interview.id}
+               userId={user?.id!}
+               id={interview.id}
+               role={interview.role}
+               type={interview.type}
+               techstack={interview.techstack}
+               createdAt={interview.createdAt} />
             ))
           ) : (
             <p>You haven&apos;t taken any interviews yet</p>
@@ -65,8 +68,15 @@ const page = async () => {
         <h2>Take an Interview</h2>
         <div className="interviews-section">
         {hasUpcomingInterviews ? (
-            latestInterviews?.map((interview) => (
-              <InterviewCard key={interview.id} {...interview} />
+            AllInterviews?.map((interview) => (
+              <InterviewCard 
+              key={interview.id}
+               userId={user?.id!}
+               id={interview.id}
+               role={interview.role}
+               type={interview.type}
+               createdAt={interview.createdAt}
+               techstack={interview.techstack} />
             ))
           ) : (
             <p>No available interviews. Start one now!</p>

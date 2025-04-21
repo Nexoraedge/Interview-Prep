@@ -8,7 +8,7 @@ import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
 const InterviewCard = async({
   id,
-  userid,
+  userId,
   role,
   type,
   techstack,
@@ -17,8 +17,10 @@ const InterviewCard = async({
   finalized,
   createdAt,
 }: Interview) => {
-
-  const feedback = userid && id ? await getFeedbackByInterviewId({interviewId:id , userId:userid }):null;
+   console.log(id , userId)
+   const feedback =  id&&userId
+   ? await getFeedbackByInterviewId({ interviewId: id   , userId:userId })
+   : null;
   console.log(feedback)
   const normalizedtype = /mix/gi.test(type) ? "Mixed" : type;
   const timestamp = feedback?.createdAt || createdAt;

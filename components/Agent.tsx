@@ -59,7 +59,7 @@ const Agent = ({ userName, userId, type , interviewId , questions }: AgentProps)
   }, []);
 
   const handleFeedback= async (messages:SavedMessage[]) => {
-    //console.log("messages- genrate feed back here", messages);
+    ////console.log("messages- genrate feed back here", messages);
 
     const {success , feedbackId:id} = await createFeedback({
       interviewId:interviewId!,
@@ -71,7 +71,7 @@ const Agent = ({ userName, userId, type , interviewId , questions }: AgentProps)
     if(success && id){
       router.push(`/interview/${interviewId}/feedback`)
     }else{
-      //console.log("error in feedback");
+      ////console.log("error in feedback");
       router.push('/')
     }
   }
@@ -95,7 +95,7 @@ const Agent = ({ userName, userId, type , interviewId , questions }: AgentProps)
         userid: userId,
       },
     });
-    // //console.log("Starting call with ID:", process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID);
+    // ////console.log("Starting call with ID:", process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID);
   } else{
     let formattedQuestions = '';
 
@@ -118,7 +118,7 @@ const Agent = ({ userName, userId, type , interviewId , questions }: AgentProps)
   };
 
   const latestMessage = messages[messages.length - 1]?.content;
-  // //console.log("latestMessage : ", latestMessage);
+  // ////console.log("latestMessage : ", latestMessage);
 
   const isCallInactiveorFinished = callStatus === CallStatus.INACTIVE || callStatus === CallStatus.FINISHED;
 
